@@ -14,8 +14,7 @@ VALUES
 -- Selecionar os nomes divididos usando a função STRING_SPLIT
 SELECT
     ID,
-    Value AS PrimeiroNome,
-    LEAD(Value) OVER (ORDER BY (SELECT NULL)) AS SegundoNome,
-    LEAD(Value, 2) OVER (ORDER BY (SELECT NULL)) AS Sobrenome
-FROM Pessoas
-CROSS APPLY STRING_SPLIT(NomeCompleto, ',');
+    SUBSTRING(NomeCompleto, 1, CHARINDEX(',', NomeCompleto) - 1) AS PrimeiroNome,
+    SUBSTRING(NomeCompleto, CHARINDEX(',', NomeCompleto) + 1, CHARINDEX(',', NomeCompleto, CHARINDEX(',', NomeCompleto) + 1) - CHARINDEX(',', NomeCompleto) - 1) AS SegundoNome,
+    SUBSTRING(NomeCompleto, CHARINDEX(',', NomeCompleto, CHARINDEX(',', NomeCompleto) + 1) + 1, LEN(NomeCompleto)) AS Sobrenome
+FROM Pessoas;
